@@ -13,15 +13,23 @@ class Checkout
 
   def total
     @shopping_cart.apply_deals
-    @shopping_cart.items.reduce(0) do |result,(item, amount)|
+    items = @shopping_cart.items
+
+    shopping_cart_cost = items.reduce(0) do |result,(item, amount)|
       result + calculate_item_total_cost(item, amount)
     end
+
+    format_price shopping_cart_cost
   end
 
   private
 
     def calculate_item_total_cost item, amount
       @pricing_rules_manager.get_item_price(item, amount) * amount
+    end
+
+    def format_price price
+      "#{price}€"
     end
 end
 
@@ -56,7 +64,7 @@ class PricingRulesManager
 end
 
 
-# RULES ##############################################################
+# RULES ########################################################################
 
 class Rule
   attr_accessor :code, :price, :amount
@@ -78,7 +86,7 @@ class OilRule < Rule
 end
 
 
-# DEALS ##############################################################
+# DEALS ########################################################################
 
 class MineralWaterDeal
   attr_accessor :code
